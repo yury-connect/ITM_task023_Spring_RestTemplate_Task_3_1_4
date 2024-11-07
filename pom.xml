@@ -15,7 +15,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>spring.rest.template</name>
-	<description>ITM_task023_Spring_Rest_template_Task_3_1_4</description>
+	<description>ITM_task023_Spring_RestTemplate_Task_3_1_4</description>
 	<url/>
 
 	<licenses>
@@ -49,6 +49,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.7.5</version> <!-- Убедитесь, что версия совместима с вашим проектом -->
 		</dependency>
 
 		<!-- MySQL Connector: драйвер для работы с MySQL базой данных -->

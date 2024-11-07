@@ -1,7 +1,13 @@
 package ru.itmentor.spring.rest.template.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.sql.Date;
+import java.sql.Time;
 
 
 @Data
@@ -25,5 +31,11 @@ public class User {
 
     @Column(name = "user_age")
     private Byte age;
+//
+//    @Column(name = "user_datestamp")
+//    private Date dateStamp;
+//
+//    @Column(name = "user_timestamp")
+//    private Time timeStamp;
 
 }
