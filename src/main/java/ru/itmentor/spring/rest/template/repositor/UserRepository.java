@@ -1,10 +1,14 @@
-package ru.itmentor.spring.rest.template.service;
+package ru.itmentor.spring.rest.template.repositor;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.itmentor.spring.rest.template.model.User;
 
 import java.util.List;
 
 
-public interface UserService {
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 
     // Создать нового пользователя
     User createUser(User user);

@@ -100,6 +100,14 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
+		<!--Добавляю Swagger (Springfox или Springdoc), чтобы упростить взаимодействие с API и обеспечить его понятную документацию.-->
+		<!--		После добавления зависимости, Swagger UI будет доступен по адресу http://localhost:8080/swagger-ui.html (по умолчанию).-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.5.13</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
