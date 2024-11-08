@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthToken {
 
+    // JSESSIONID
     private String jwtToken;
+
 
 }
