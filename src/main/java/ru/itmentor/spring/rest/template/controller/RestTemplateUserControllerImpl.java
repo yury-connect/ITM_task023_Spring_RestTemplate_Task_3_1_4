@@ -1,14 +1,13 @@
 package ru.itmentor.spring.rest.template.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itmentor.spring.rest.template.model.User;
 import ru.itmentor.spring.rest.template.service.UserService;
 
-import java.util.List;
+import java.util.logging.Logger;
 
 
 /*
@@ -16,10 +15,17 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/users")
-@AllArgsConstructor
 public class RestTemplateUserControllerImpl implements RestTemplateUserController {
 
-    UserService userService;
+    private final UserService userService;
+    private final Logger logger;
+
+
+    public RestTemplateUserControllerImpl(UserService userService, @Qualifier("controllerLogger") Logger logger) {
+        this.userService = userService;
+        this.logger = logger;
+    }
+
 
 
     // **********   step № 2   **********
@@ -27,17 +33,8 @@ public class RestTemplateUserControllerImpl implements RestTemplateUserControlle
     @Operation(summary = "Создание одного нового пользователя (POST)")
     @PostMapping()
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        System.out.println("\n\n\tRestTemplateUserControllerImpl: createUser( " + user + " )\n\n");
+        logger.info("RestTemplateUserControllerImpl: createUser( " + user + " )");
         return userService.createUser(user);
-    }
-
-
-    @Override
-    @Operation(summary = "Получение конкретного пользователя по ID (GET)")
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
-        System.out.println("\n\n\tRestTemplateUserControllerImpl: getUserById( " + id + " )\n\n");
-        return userService.getUserById(id);
     }
 
 
@@ -46,43 +43,38 @@ public class RestTemplateUserControllerImpl implements RestTemplateUserControlle
     @Operation(summary = "Получение всех пользователей (GET)")
     @GetMapping()
     public  ResponseEntity<User[]> getAllUsers() {
-        System.out.println("\n\n\tRestTemplateUserControllerImpl: findAllUsers()\n\n");
+        logger.info("RestTemplateUserControllerImpl: getAllUsers()");
         return userService.getAllUsers();
     }
 
 
+    // **********   step № 3   **********
     @Override
     @Operation(summary = "Обновление данных пользователя (PUT)")
     @PutMapping("/{id}")
     public ResponseEntity<String> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        System.out.println("\n\n\tRestTemplateUserControllerImpl: updateUser( " + id + " ; " + user + " )\n\n");
+        logger.info("RestTemplateUserControllerImpl: updateUser( " + id + " ; " + user + " )");
         return userService.updateUser(id, user);
     }
 
 
+    // **********   step № 4   **********
     @Override
     @Operation(summary = "Удаление пользователя (DELETE)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") Long id) {
+        logger.info("RestTemplateUserControllerImpl: deleteUserById( " + id + " )");
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build(); // Возвращаем HttpStatus.NO_CONTENT (204)
     }
 
-    @Override
-    @Operation(summary = "Удаление всех пользователей (DELETE)")
-    @DeleteMapping()
-    public ResponseEntity<Void> deleteAllUsers() {
-        userService.deleteAllUsers();
-        return ResponseEntity.noContent().build(); // Возвращаем HttpStatus.NO_CONTENT (204)
-    }
 
-    // 7. Удаление всех пользователей (DELETE)
+    // **********   Выполнить полный скрипт и получить код согласно задания (GET)   **********
     @Override
     @Operation(summary = "Выполнить полный скрипт и получить код согласно задания (GET)")
     @GetMapping("/execute_scrypt")
     public ResponseEntity<String> executeScrypt() {
-        System.out.println("\n\n\tRestTemplateUserControllerImpl: executeScrypt()\n\n");
-        userService.executeScrypt();
-        return ResponseEntity.noContent().build();
+        logger.info("RestTemplateUserControllerImpl: executeScrypt()");
+        return userService.executeScrypt();
     }
 }

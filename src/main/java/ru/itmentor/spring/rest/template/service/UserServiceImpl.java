@@ -1,12 +1,15 @@
 package ru.itmentor.spring.rest.template.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.itmentor.spring.rest.template.model.*;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import static ru.itmentor.spring.rest.template.constants.Constants.URL_SOURCE;
 
@@ -14,13 +17,20 @@ import static ru.itmentor.spring.rest.template.constants.Constants.URL_SOURCE;
 /**
  *      Этот слой вызывает RestTemplate, обрабатывает данные и взаимодействует с внешними API, если нужно.
  **/
-@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final RestTemplate restTemplate;
     private final AuthToken authToken;
+    private final Logger logger;
 
+
+    @Autowired
+    public UserServiceImpl(RestTemplate restTemplate, AuthToken authToken, @Qualifier("serviceLogger") Logger logger) {
+        this.restTemplate = restTemplate;
+        this.authToken = authToken;
+        this.logger = logger;
+    }
 
 
     // **********   step № 2   **********
@@ -40,32 +50,9 @@ public class UserServiceImpl implements UserService {
 
         // Проверка статуса ответа
         if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Пользователь успешно добавлен/ создан. Статус: " + response.getStatusCode());
+            logger.info("Пользователь успешно добавлен/ создан. Статус: " + response.getStatusCode());
         } else {
-            System.out.println("Ошибка при добавлении/ создании пользователя: " + response.getStatusCode());
-        }
-        return response;
-    }
-
-    @Override
-    public ResponseEntity<User> getUserById(Long id) {
-
-        // Создаем HttpHeaders и добавляем заголовок Authorization с токеном
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
-        headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
-
-        // Создаем HttpEntity, в которую добавляем объект User и заголовки
-        HttpEntity<User> requestEntity = new HttpEntity<>(headers);
-
-        // Используем RestTemplate для выполнения PUT-запроса
-        ResponseEntity<User> response = restTemplate.exchange(URL_SOURCE + "/" + id, HttpMethod.GET, requestEntity, User.class);
-
-        // Проверка статуса ответа
-        if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
-        } else {
-            System.out.println("Ошибка при обновлении пользователя: " + response.getStatusCode());
+            logger.info("Ошибка при добавлении/ создании пользователя: " + response.getStatusCode());
         }
         return response;
     }
@@ -74,7 +61,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<User[]> getAllUsers() {
         HttpHeaders headers = new HttpHeaders();
-//        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(headers);
 
@@ -84,6 +70,7 @@ public class UserServiceImpl implements UserService {
         Arrays.stream(response.getBody()).forEach(user -> System.out.println(user));
         return response;
     }
+
 
     // **********   step № 3   **********
     @Override
@@ -96,9 +83,9 @@ public class UserServiceImpl implements UserService {
         ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.PUT, requestEntity, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
+            logger.info("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
         } else {
-            System.out.println("Ошибка при обновлении пользователя: " + response.getStatusCode());
+            logger.info("Ошибка при обновлении пользователя: " + response.getStatusCode());
         }
         return response;
     }
@@ -114,31 +101,15 @@ public class UserServiceImpl implements UserService {
         ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE + "/" + id, HttpMethod.DELETE, requestEntity, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Пользователь успешно удален. Статус: " + response.getStatusCode());
+            logger.info("Пользователь успешно удален. Статус: " + response.getStatusCode());
         } else {
-            System.out.println("Ошибка при удалении пользователя: " + response.getStatusCode());
+            logger.info("Ошибка при удалении пользователя: " + response.getStatusCode());
         }
         return response;
     }
 
 
-    @Override
-    public ResponseEntity<String> deleteAllUsers() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<User> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.DELETE, requestEntity, String.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Пользователь успешно удален. Статус: " + response.getStatusCode());
-        } else {
-            System.out.println("Ошибка при удалении пользователя: " + response.getStatusCode());
-        }
-        return response;
-    }
-
-
+    // Выполнить весь скрипт согласно заданию
     @Override
     public ResponseEntity<String> executeScrypt() {
         User createdUser = User.builder()
@@ -154,16 +125,12 @@ public class UserServiceImpl implements UserService {
                 .build();
         StringBuilder result = new StringBuilder();
 
-        this.getAllUsers().getBody();
+        this.getAllUsers().getBody(); // we don't add it, we just call it
+        result.append(this.createUser(createdUser).getBody()); // part № 1
+        result.append(this.updateUser(3L, updatedUser).getBody()); // part № 2
+        result.append(this.deleteUserById(3L).getBody()); // part № 3
 
-//        result.append(this.getAllUsers().getBody());
-        result.append(this.createUser(createdUser).getBody());
-        result.append(this.updateUser(3L, updatedUser).getBody());
-        result.append(this.deleteUserById(3L).getBody());
-
-
-
-        System.out.println("Result code = '" + result + "'");
+        logger.info("Result code = '" + result + "'");
         return ResponseEntity.ok(result.toString());
     }
 
