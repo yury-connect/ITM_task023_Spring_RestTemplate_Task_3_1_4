@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import ru.itmentor.spring.rest.template.controller.RestTemplateUserControllerImpl;
 import ru.itmentor.spring.rest.template.model.AuthToken;
-import ru.itmentor.spring.rest.template.service.UserServiceImpl;
+import ru.itmentor.spring.rest.template.service.UserServiceApiImpl;
 
 import java.util.logging.Logger;
 
@@ -25,7 +25,7 @@ public class AppConfig {
 
     @Bean(name = "serviceLogger")
     public Logger userServiceImplLogger() {
-        return Logger.getLogger(UserServiceImpl.class.getSimpleName());
+        return Logger.getLogger(UserServiceApiImpl.class.getSimpleName());
     }
 
     @Bean(name = "controllerLogger")

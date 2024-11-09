@@ -18,11 +18,6 @@ public class SecurityConfig {
                         .antMatchers("/api/users/**").permitAll()
                         .anyRequest().authenticated())
 
-//                .csrf(csrf -> csrf.disable())  // Отключаем CSRF (новый синтаксис для более новых версий)
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()  // Разрешаем доступ ко всем URL без аутентификации
-//                )
-
                 .formLogin(form -> form.disable())  // Отключаем форму входа
                 .httpBasic(basic -> basic.disable());  // Отключаем базовую аутентификацию
 
