@@ -106,7 +106,7 @@
 > // Удаленный сервер вернется код `5ebfebe7cb975dfcf9`
 >
 > [**ССЫЛКА**](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) 
-> просмотреть маршруты через `swagger-ui` _(скрин ниже, но можно просматривать детали по маршрутам)_
+> просмотреть детально маршруты через `swagger-ui` _(скрин ниже)_
 
 > > **GET** `/api/users/` Получение всех пользователей (GET)
 > >
@@ -119,11 +119,10 @@
 > > **GET** `/api/users/execute_scrypt` Выполнить полный скрипт и получить код согласно задания (GET)
 > >
 >
-> > #### Скрин ниже:
+> #### Скрин ниже:
 > ![скрин](/imgs/2024-11-09_19-52-13.png)
 >
-> Полный список маршрутов можно получить через модуль SWAGER, перейдя по [ссылке](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) при запущеном проекте.
-> _http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config_
+> Дублирую [**ссылку**](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) на просмотр маршрутов через модуль **SWAGER**.
 >
 
 ### Иерархия файлов проекта:
