@@ -5,6 +5,8 @@
 
 [видео: **RestTemplate как взаимодействуют приложения?**](https://youtu.be/OGoRpyEgFlk?si=dN-HARfNL2-6Fmsy)
 
+[Страница генерации текстовых банеров](https://devops.datenkollektiv.de/banner.txt/index.html)
+
 ---
 
 [статья 'Spring — это не страшно. Cookie & Headers'](https://javarush.com/groups/posts/3195-spring---ehto-ne-strashno-cookie--headers)

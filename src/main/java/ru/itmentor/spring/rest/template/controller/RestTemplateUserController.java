@@ -3,8 +3,6 @@ package ru.itmentor.spring.rest.template.controller;
 import org.springframework.http.ResponseEntity;
 import ru.itmentor.spring.rest.template.model.User;
 
-import java.util.List;
-
 
 public interface RestTemplateUserController {
 

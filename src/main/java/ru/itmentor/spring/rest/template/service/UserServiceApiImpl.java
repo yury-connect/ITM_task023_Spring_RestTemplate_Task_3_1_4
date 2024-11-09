@@ -14,8 +14,10 @@ import static ru.itmentor.spring.rest.template.constants.Constants.URL_SOURCE;
 
 
 /**
- *      Этот слой вызывает RestTemplate, обрабатывает данные и взаимодействует с внешними API, если нужно.
- **/
+ * Сервис для работы с пользователями через RESTful сервисы.
+ * Реализует взаимодействие с внешними API с помощью RestTemplate.
+ * @author Lapitski Yury
+ */
 @Service
 public class UserServiceApiImpl implements UserServiceApi {
 
@@ -32,63 +34,29 @@ public class UserServiceApiImpl implements UserServiceApi {
     }
 
 
+
     // **********   step № 2   **********
     @Override
     public ResponseEntity<String> createUser(User user) {
         logger.info("UserServiceApiImpl.createUser(User user) // \t user = '" + user + "';");
-
-        // Создаем HttpHeaders и добавляем заголовок Authorization с токеном
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
-//        headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
-//
-//        // Создаем HttpEntity, в которую добавляем объект User и заголовки
-//        HttpEntity<User> request = new HttpEntity<>(user, headers);
-//        // Используем RestTemplate для выполнения PUT-запроса
-//        ResponseEntity<String> response = restTemplate.exchange(
-//                URL_SOURCE,
-//                HttpMethod.POST,
-//                request,
-//                String.class);
-
-        ResponseEntity<String> response = getResponse(
+        return getResponse(
                 URL_SOURCE,
                 user, // Тело запроса — объект User, который нужно обновить
                 HttpMethod.POST,
                 String.class);
-
-        // Проверка статуса ответа
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            logger.info("Пользователь успешно добавлен/ создан. Статус: " + response.getStatusCode());
-//        } else {
-//            logger.info("Ошибка при добавлении/ создании пользователя: " + response.getStatusCode());
-//        }
-        return response;
     }
+
 
     // **********   step № 1   **********
     @Override
     public ResponseEntity<User[]> getAllUsers() {
         logger.info("UserServiceApiImpl.getAllUsers();");
-
-        //        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<String> request = new HttpEntity<>(null, headers);
-//        ResponseEntity<User[]> response = restTemplate.exchange(
-//                URL_SOURCE,
-//                HttpMethod.GET,
-//                request,
-//                User[].class);
-
         ResponseEntity<User[]> response = getResponse(
                 URL_SOURCE,
                 null, // Нет тела запроса для GET-запроса
                 HttpMethod.GET,
                 User[].class);
-
         setSessionId(response.getHeaders());
-//        Arrays.stream(response.getBody()).forEach(user -> System.out.println(user));
         logger.info("UserServiceApiImpl.getAllUsers(): " + Arrays.toString(response.getBody()) + ";");
         return response;
     }
@@ -98,30 +66,12 @@ public class UserServiceApiImpl implements UserServiceApi {
     @Override
     public ResponseEntity<String> updateUser(Long id, User user) {
         logger.info("UserServiceApiImpl.updateUser(Long id, User user) // \t id = '" + id + "'; \t user = '" + user + "';");
-
         user.setId(id);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<User> request = new HttpEntity<>(user, headers);
-//        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE,
-//                HttpMethod.PUT,
-//                request,
-//                String.class);
-
-        ResponseEntity<String> response = getResponse(
+        return getResponse(
                 URL_SOURCE,
                 user, // Тело запроса — объект User, который нужно обновить
                 HttpMethod.PUT,
                 String.class);
-
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            logger.info("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
-//        } else {
-//            logger.info("Ошибка при обновлении пользователя: " + response.getStatusCode());
-//        }
-        return response;
     }
 
 
@@ -129,31 +79,11 @@ public class UserServiceApiImpl implements UserServiceApi {
     @Override
     public ResponseEntity<String> deleteUserById(Long id) {
         logger.info("UserServiceApiImpl.deleteUserById(Long id) // \t id = '" + id + "';");
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<User> requestEntity = new HttpEntity<>(headers);
-//        ResponseEntity<String> response = restTemplate.exchange(
-//                URL_SOURCE + "/" + id,
-//                HttpMethod.DELETE,
-//                requestEntity,
-//                String.class);
-
-        // Используем общий метод getResponse, чтобы вызвать удаление пользователя
-        ResponseEntity<String> response = getResponse(
+        return getResponse( // Используем общий метод getResponse, чтобы вызвать удаление пользователя
                 URL_SOURCE + "/" + id,  // Конечная точка удаления пользователя
                 null,                    // Тело запроса не требуется для DELETE
                 HttpMethod.DELETE,       // Метод запроса DELETE
                 String.class);           // Ожидаемый тип ответа
-
-//        // Обработка результата
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            logger.info("Пользователь успешно удален. Статус: " + response.getStatusCode());
-//        } else {
-//            logger.info("Ошибка при удалении пользователя: " + response.getStatusCode());
-//        }
-        return response;
     }
 
 
@@ -212,8 +142,7 @@ public class UserServiceApiImpl implements UserServiceApi {
                 .replace("JSESSIONID=", "")
                 .split(";")
                 [0];
-            authToken.setJSessionId(jSessionIdReceived.trim());
-
+        authToken.setJSessionId(jSessionIdReceived.trim());
         logger.info("UserServiceApiImpl: *** new value 'JSESSIONID'  = '" + authToken.getJSessionId() + "' ***;");
     }
 
@@ -229,8 +158,8 @@ public class UserServiceApiImpl implements UserServiceApi {
         headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
 
         // Если тело запроса не нужно (например, для DELETE), используем конструктор без тела
-        HttpEntity<U> requestEntity = requestBody
-                != null ? new HttpEntity<>(requestBody, headers)
+        HttpEntity<U> requestEntity = (requestBody != null)
+                ? new HttpEntity<>(requestBody, headers)
                 : new HttpEntity<>(headers);
 
         // Выполнение запроса с использованием restTemplate
@@ -243,11 +172,12 @@ public class UserServiceApiImpl implements UserServiceApi {
 
         // Логирую результат
         if (response.getStatusCode() == HttpStatus.OK) {
-            logger.info("UserServiceApiImpl.getResponse(...): Результат операции - УСПЕХ :) // Статус: " + response.getStatusCode() + ";");
+            logger.info("UserServiceApiImpl.getResponse(...): Результат операции - УСПЕХ :) // Статус: "
+                    + response.getStatusCode() + ";");
         } else {
-            logger.warning("UserServiceApiImpl.getResponse(...): Результат операции - ОШИБКА :( // Статус: " + response.getStatusCode() + ";");
+            logger.warning("UserServiceApiImpl.getResponse(...): Результат операции - ОШИБКА :( // Статус: "
+                    + response.getStatusCode() + ";");
         }
         return response;
     }
 }
-
