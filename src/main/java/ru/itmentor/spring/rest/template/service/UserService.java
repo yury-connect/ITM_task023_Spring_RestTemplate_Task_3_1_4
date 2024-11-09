@@ -25,5 +25,5 @@ public interface UserService {
     // Удалить всех пользователей
     ResponseEntity<String> deleteAllUsers();
 
-    ResponseEntity<String> executeScrypt(User user);
+    ResponseEntity<String> executeScrypt();
 }

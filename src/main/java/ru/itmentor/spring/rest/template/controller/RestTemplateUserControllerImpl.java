@@ -81,7 +81,8 @@ public class RestTemplateUserControllerImpl implements RestTemplateUserControlle
     @Operation(summary = "Выполнить полный скрипт и получить код согласно задания (GET)")
     @GetMapping("/execute_scrypt")
     public ResponseEntity<String> executeScrypt() {
-        userService.deleteAllUsers();
+        System.out.println("\n\n\tRestTemplateUserControllerImpl: executeScrypt()\n\n");
+        userService.executeScrypt();
         return ResponseEntity.noContent().build();
     }
 }
