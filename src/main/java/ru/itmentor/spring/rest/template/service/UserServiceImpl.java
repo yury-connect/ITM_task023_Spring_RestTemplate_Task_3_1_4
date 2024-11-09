@@ -43,10 +43,13 @@ public class UserServiceImpl implements UserService {
         headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
 
         // Создаем HttpEntity, в которую добавляем объект User и заголовки
-        HttpEntity<User> requestEntity = new HttpEntity<>(user, headers);
-
+        HttpEntity<User> request = new HttpEntity<>(user, headers);
         // Используем RestTemplate для выполнения PUT-запроса
-        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.POST, requestEntity, String.class, new Object[0]);
+        ResponseEntity<String> response = restTemplate.exchange(
+                URL_SOURCE,
+                HttpMethod.POST,
+                request,
+                String.class, new Object[0]);
 
         // Проверка статуса ответа
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -60,13 +63,22 @@ public class UserServiceImpl implements UserService {
     // **********   step № 1   **********
     @Override
     public ResponseEntity<User[]> getAllUsers() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> request = new HttpEntity<>(headers);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<String> request = new HttpEntity<>(null, headers);
+//        ResponseEntity<User[]> response = restTemplate.exchange(
+//                URL_SOURCE,
+//                HttpMethod.GET,
+//                request,
+//                User[].class);
 
-        ResponseEntity<User[]> response = restTemplate.exchange(URL_SOURCE, HttpMethod.GET, request, User[].class);
+        ResponseEntity<User[]> response = getResponse(
+                String.class, // запрос без тела запроса
+                HttpMethod.GET,
+                User[].class);
+
         setSessionId(response.getHeaders());
-
         Arrays.stream(response.getBody()).forEach(user -> System.out.println(user));
         return response;
     }
@@ -76,11 +88,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<String> updateUser(Long id, User user) {
         user.setId(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<User> requestEntity = new HttpEntity<>(user, headers);
-        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.PUT, requestEntity, String.class);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<User> request = new HttpEntity<>(user, headers);
+//        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE,
+//                HttpMethod.PUT,
+//                request,
+//                String.class);
+
+        ResponseEntity<User[]> response = getResponse(
+                String.class, // запрос без тела запроса
+                HttpMethod.GET,
+                User[].class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             logger.info("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
@@ -97,8 +118,13 @@ public class UserServiceImpl implements UserService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
         headers.setContentType(MediaType.APPLICATION_JSON);
+
         HttpEntity<User> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE + "/" + id, HttpMethod.DELETE, requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                URL_SOURCE + "/" + id,
+                HttpMethod.DELETE,
+                requestEntity,
+                String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             logger.info("Пользователь успешно удален. Статус: " + response.getStatusCode());
@@ -107,6 +133,11 @@ public class UserServiceImpl implements UserService {
         }
         return response;
     }
+
+
+
+
+
 
 
     // Выполнить весь скрипт согласно заданию
@@ -148,6 +179,29 @@ public class UserServiceImpl implements UserService {
             authToken.setJSessionId(jSessionIdReceived.trim());
 
         System.out.println("\n\t\t*** new value 'JSESSIONID'  = " + authToken.getJSessionId());
+    }
+
+
+
+
+
+    private <T, S> ResponseEntity<T> getResponse(S requestBody,
+                                                 HttpMethod httpMethod,
+                                                 Class<T> responseType) {
+        // Создаем HttpHeaders и добавляем заголовок Authorization с токеном
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
+        headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
+
+        // Создаем HttpEntity, в которую добавляем объект requestBody и заголовки
+        HttpEntity<S> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        // Выполнение запроса с использованием restTemplate
+        return restTemplate.exchange(
+                URL_SOURCE,
+                httpMethod,
+                requestEntity,
+                responseType);
     }
 }
 
