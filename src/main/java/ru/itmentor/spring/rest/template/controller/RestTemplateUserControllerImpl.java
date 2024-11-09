@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itmentor.spring.rest.template.model.User;
-import ru.itmentor.spring.rest.template.service.UserService;
+import ru.itmentor.spring.rest.template.service.UserServiceApi;
 
 import java.util.logging.Logger;
 
@@ -17,11 +17,11 @@ import java.util.logging.Logger;
 @RequestMapping("/api/users")
 public class RestTemplateUserControllerImpl implements RestTemplateUserController {
 
-    private final UserService userService;
+    private final UserServiceApi userService;
     private final Logger logger;
 
 
-    public RestTemplateUserControllerImpl(UserService userService, @Qualifier("controllerLogger") Logger logger) {
+    public RestTemplateUserControllerImpl(UserServiceApi userService, @Qualifier("controllerLogger") Logger logger) {
         this.userService = userService;
         this.logger = logger;
     }

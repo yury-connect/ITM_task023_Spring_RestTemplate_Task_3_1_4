@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import ru.itmentor.spring.rest.template.model.User;
 
 
-public interface UserService {
+public interface UserServiceApi {
 
     // Создать нового пользователя
     ResponseEntity<String> createUser(User user);
