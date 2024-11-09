@@ -107,7 +107,7 @@
 >
 > [**ССЫЛКА**](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) 
 > просмотреть детально маршруты через `swagger-ui` _(скрин ниже)_
-
+>
 > > **GET** `/api/users/` Получение всех пользователей (GET)
 > >
 > > **POST** `/api/users/` Создание одного нового пользователя (POST)
@@ -122,7 +122,7 @@
 > #### Скрин ниже:
 > ![скрин](/imgs/2024-11-09_19-52-13.png)
 >
-> Дублирую [**ссылку**](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) на просмотр маршрутов через модуль **SWAGER**.
+> Дублирую [**ссылку**](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) на просмотр маршрутов через модуль `SWAGER`.
 >
 
 ### Иерархия файлов проекта:
