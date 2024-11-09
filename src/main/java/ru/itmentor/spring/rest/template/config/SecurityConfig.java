@@ -14,9 +14,9 @@ public class SecurityConfig {
         http
                 .csrf().disable() // Отключаем CSRF для REST API
 
-                .authorizeRequests(auth -> auth
-                        .antMatchers("/api/users/**").permitAll()
-                        .anyRequest().authenticated())
+//                .authorizeRequests(auth -> auth
+//                        .antMatchers("/api/users/**", "/v3/api-docs/**").permitAll()
+//                        .anyRequest().authenticated())
 
                 .formLogin(form -> form.disable())  // Отключаем форму входа
                 .httpBasic(basic -> basic.disable());  // Отключаем базовую аутентификацию

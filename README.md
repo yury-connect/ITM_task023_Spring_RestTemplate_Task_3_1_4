@@ -99,4 +99,62 @@
 
 ## Документирую код выполненного задания по **PP 3.1.4**.
 
+> > **GET** `/api/users/` Получение всех пользователей (GET)
+> >
+> > **POST** `/api/users/` Создание одного нового пользователя (POST)
+> >
+> > **PUT** `/api/users/{id}` Обновление данных существующего пользователя (PUT)
+> >
+> > **DELETE** `/api/users/{id}` Удаление пользователя по ID (DELETE)
+> >
+> > **GET** `/api/users/execute_scrypt` Выполнить полный скрипт и получить код согласно задания (GET)
+> >
+>
+> > #### Скрин ниже:
+> ![скрин](/imgs/2024-11-09_19-52-13.png)
+>
+> Полный список маршрутов можно получить через модуль SWAGER, перейдя по [ссылке](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) при запущеном проекте.
+> _http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config_
+>
 
+### Иерархия файлов проекта:
+```text
+ITM_task023_Spring_RestTemplate_Task_3_1_4
+src
+└──main
+   ├───java
+   │   └───ru
+   │       └───itmentor
+   │           └───spring
+   │               └───rest
+   │                   └───template
+   │                       │   Application.java
+   │                       │   ServletInitializer.java
+   │                       │
+   │                       ├───config
+   │                       │       AppConfig.java
+   │                       │       SecurityConfig.java
+   │                       │
+   │                       ├───constants
+   │                       │       Constants.java
+   │                       │
+   │                       ├───controller
+   │                       │       RestTemplateUserController.java
+   │                       │       RestTemplateUserControllerImpl.java
+   │                       │
+   │                       ├───model
+   │                       │       AuthToken.java
+   │                       │       User.java
+   │                       │
+   │                       └───service
+   │                               UserServiceApi.java
+   │                               UserServiceApiImpl.java
+   │
+   └───resources
+       │   application.properties
+       │   banner.txt
+       │
+       └───postman
+               IT-Mentor_collection_v2.postman
+               IT-Mentor_collection_v2_1.postman
+```
