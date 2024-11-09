@@ -102,6 +102,8 @@
 > [**ССЫЛКА**](http://localhost:8088/api/users/execute_scrypt) на запуск скрипта _(на ПК)_ 
 > // Удаленный сервер вернется код `5ebfebe7cb975dfcf9`
 >
+> [**ССЫЛКА**](http://localhost:8088/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config) 
+> просмотреть маршруты через `swagger-ui` _(скрин ниже, но можно просматривать детали по маршрутам)_
 
 > > **GET** `/api/users/` Получение всех пользователей (GET)
 > >
