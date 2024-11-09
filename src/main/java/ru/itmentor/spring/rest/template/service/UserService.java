@@ -1,4 +1,5 @@
 package ru.itmentor.spring.rest.template.service;
+import org.springframework.http.ResponseEntity;
 import ru.itmentor.spring.rest.template.model.User;
 
 import java.util.List;
@@ -7,26 +8,22 @@ import java.util.List;
 public interface UserService {
 
     // Создать нового пользователя
-    User createUser(User user);
-
-    // Создать список новых пользователей
-    List<User> createUsers(List<User> userList);
+    ResponseEntity<String> createUser(User user);
 
     // Найти пользователя по ID
-    User findUserById(int id);
-
-    // Найти пользователя по userName
-    User findUserByUsername(String userName);
+    ResponseEntity<User> getUserById(Long id);
 
     // Найти всех пользователей
-    List<User> findAllUsers();
+    ResponseEntity<User[]> getAllUsers();
 
     // Обновить информацию о пользователе
-    User updateUser(User user);
+    ResponseEntity<String> updateUser(Long id, User user);
 
     // Удалить пользователя по ID
-    User deleteUserById(int id);
+    ResponseEntity<String> deleteUserById(Long id);
 
     // Удалить всех пользователей
-    User deleteAllUsers();
+    ResponseEntity<String> deleteAllUsers();
+
+    ResponseEntity<String> executeScrypt(User user);
 }

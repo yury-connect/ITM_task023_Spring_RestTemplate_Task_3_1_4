@@ -1,17 +1,21 @@
 package ru.itmentor.spring.rest.template.model;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import static ru.itmentor.spring.rest.template.constants.Constants.JSESSIONID_DEFAULT;
 
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AuthToken {
 
     // JSESSIONID
-    private String jwtToken;
+    private String jSessionId;
 
+
+    public AuthToken() {
+        this.jSessionId = JSESSIONID_DEFAULT;
+    }
 
 }

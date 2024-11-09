@@ -9,23 +9,23 @@ import java.util.List;
 public interface RestTemplateUserController {
 
     // Создать нового пользователя
-    ResponseEntity<User> createUser(User user);
-
-    // Создать список новых пользователей
-    ResponseEntity<List<User>> createUsers(List<User> userList);
+    ResponseEntity<String> createUser(User user);
 
     // Найти пользователя по ID
-    ResponseEntity<User> findUserById(Integer id);
+    ResponseEntity<User> getUserById(Long id);
 
     // Найти всех пользователей
-    ResponseEntity<List<User>> findAllUsers();
+    ResponseEntity<User[]> getAllUsers();
 
     // Обновить информацию о пользователе
-    ResponseEntity<User> updateUser(User user);
+    ResponseEntity<String> updateUser(Long id, User user);
 
     // Удалить пользователя по ID
-    ResponseEntity<Void> deleteUserById(Integer id);
+    ResponseEntity<Void> deleteUserById(Long id);
 
     // Удалить всех пользователей
     ResponseEntity<Void> deleteAllUsers();
+
+    // Выполнить весь скрипт согласно заданию
+    ResponseEntity<String> executeScrypt();
 }

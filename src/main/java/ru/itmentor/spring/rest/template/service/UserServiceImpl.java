@@ -1,20 +1,14 @@
 package ru.itmentor.spring.rest.template.service;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.itmentor.spring.rest.template.model.AuthToken;
-import ru.itmentor.spring.rest.template.model.User;
-import ru.itmentor.spring.rest.template.repositor.UserRepository;
+import ru.itmentor.spring.rest.template.model.*;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
-import static ru.itmentor.spring.rest.template.constants.Constants.SOURCE_URL;
+import static ru.itmentor.spring.rest.template.constants.Constants.URL_SOURCE;
 
 
 /*
@@ -29,128 +23,200 @@ public class UserServiceImpl implements UserService{
 
 
 
-    // ПЕРЕСМОТРЕТЬ!!!
+    // **********   step № 2   **********
     @Override
-    public User createUser(User user) {
-        return restTemplate.postForObject(SOURCE_URL, user, User.class);
-//        return userRepository.createUser(user);
+    public ResponseEntity<String> createUser(User user) {
+
+        // Создаем HttpHeaders и добавляем заголовок Authorization с токеном
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
+        headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
+
+        // Создаем HttpEntity, в которую добавляем объект User и заголовки
+        HttpEntity<User> requestEntity = new HttpEntity<>(user, headers);
+
+        // Используем RestTemplate для выполнения PUT-запроса
+        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.POST, requestEntity, String.class, new Object[0]);
+
+//        refreshSessionId(response.getHeaders());
+
+        // Проверка статуса ответа
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.out.println("Пользователь успешно добавлен/ создан. Статус: " + response.getStatusCode());
+        } else {
+            System.out.println("Ошибка при добавлении/ создании пользователя: " + response.getStatusCode());
+        }
+        return response;
     }
 
     @Override
-    public List<User> createUsers(List<User> userList) {
-        List<User> createdUsers = userRepository.createUsers(userList);
-        return createdUsers;
+    public ResponseEntity<User> getUserById(Long id) {
+
+        // Создаем HttpHeaders и добавляем заголовок Authorization с токеном
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
+        headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
+
+        // Создаем HttpEntity, в которую добавляем объект User и заголовки
+        HttpEntity<User> requestEntity = new HttpEntity<>(headers);
+
+        // Используем RestTemplate для выполнения PUT-запроса
+        ResponseEntity<User> response = restTemplate.exchange(URL_SOURCE + "/" + id, HttpMethod.GET, requestEntity, User.class);
+
+        // Проверка статуса ответа
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.out.println("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
+        } else {
+            System.out.println("Ошибка при обновлении пользователя: " + response.getStatusCode());
+        }
+        return response;
     }
 
-    // ПЕРЕСМОТРЕТЬ!!!
+    // **********   step № 1   **********
     @Override
-    public User findUserById(int id) {
-//        String url = SOURCE_URL + "/" + id;
-//        return restTemplate.getForObject(url, User.class);
-        return userRepository.findUserById(id);
+    public ResponseEntity<User[]> getAllUsers() {
+        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<User[]> response = restTemplate.exchange(URL_SOURCE, HttpMethod.GET, request, User[].class);
+        setSessionId(response.getHeaders());
+
+        Arrays.stream(response.getBody()).forEach(user -> System.out.println(user));
+        return response;
+    }
+
+    // **********   step № 3   **********
+    @Override
+    public ResponseEntity<String> updateUser(Long id, User user) {
+        // Обновляем объект User новыми данными (id)
+        user.setId(id);
+
+        // Создаем HttpHeaders и добавляем заголовок Authorization с токеном
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId()); // Используем сессионный идентификатор из куки
+        headers.setContentType(MediaType.APPLICATION_JSON); // Устанавливаем тип контента JSON
+
+        // Создаем HttpEntity, в которую добавляем объект User и заголовки
+        HttpEntity<User> requestEntity = new HttpEntity<>(user, headers);
+
+        // Используем RestTemplate для выполнения PUT-запроса
+        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.PUT, requestEntity, String.class);
+
+//        refreshSessionId(response.getHeaders());
+
+        // Проверка статуса ответа
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.out.println("Пользователь успешно обновлен. Статус: " + response.getStatusCode());
+        } else {
+            System.out.println("Ошибка при обновлении пользователя: " + response.getStatusCode());
+        }
+        return response;
     }
 
 
+    // **********   step № 4   **********
     @Override
-    public User findUserByUsername(String userName) {
-        return userRepository.findUserByUsername(userName);
-    }
+    public ResponseEntity<String> deleteUserById(Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE + "/" + id, HttpMethod.DELETE, requestEntity, String.class);
 
+//        refreshSessionId(response.getHeaders());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // **********   1   **********
-    @Override
-    public List<User> findAllUsers() {
-//        final String url = "http://codeflex.co:8080/rest/Management/login";
-//        RestTemplate template = new RestTemplate();
-//        Credentials cred = new Credentials();
-//        cred.setUserName("admin@codeflex.co");
-//        cred.setPassword("godmode");
-//        HttpEntity<Credentials> request = new HttpEntity<>(cred);
-
-        HttpEntity<String> request = new HttpEntity<>(authToken.getJwtToken());
-
-//        HttpEntity<String> response = template.exchange(url, HttpMethod.POST, request, String.class);
-
-        HttpEntity<User[]> response = restTemplate.exchange(SOURCE_URL, HttpMethod.GET, request, User[].class);
-        HttpHeaders headers = response.getHeaders(); // для получения всех заголовков, которые пришли вместе с ответом.
-        authToken.setJwtToken(headers.getFirst(HttpHeaders.SET_COOKIE));
-
-
-
-
-        User[] users = restTemplate.getForObject(SOURCE_URL, User[].class);
-        return Arrays.asList(users);
-//        return userRepository.findAllUsers();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Override
-    public User updateUser(User user) {
-//        String url = SOURCE_URL + "/" + user.getId();
-//        restTemplate.put(url, user);
-        return userRepository.updateUser(user);
-    }
-
-    @Override
-    public User deleteUserById(int id) {
-//        String url = SOURCE_URL + "/" + id;
-//        restTemplate.delete(url);
-        return userRepository.deleteUserById(id);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.out.println("Пользователь успешно удален. Статус: " + response.getStatusCode());
+        } else {
+            System.out.println("Ошибка при удалении пользователя: " + response.getStatusCode());
+        }
+        return response;
     }
 
     @Override
-    public User deleteAllUsers() {
-        return userRepository.deleteAllUsers();
+    public ResponseEntity<String> deleteAllUsers() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Cookie", "JSESSIONID=" + authToken.getJSessionId());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(URL_SOURCE, HttpMethod.DELETE, requestEntity, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.out.println("Пользователь успешно удален. Статус: " + response.getStatusCode());
+        } else {
+            System.out.println("Ошибка при удалении пользователя: " + response.getStatusCode());
+        }
+        return response;
     }
 
+
+    @Override
+    public ResponseEntity<String> executeScrypt(User user) {
+        User createdUser = User.builder()
+                .id(3L)
+                .name("James")
+                .lastName("Brown")
+                .age((byte)31).build();
+        User updatedUser = User.builder()
+                .id(3L)
+                .name("Thomas")
+                .lastName("Shelby")
+                .age((byte)18)
+                .build();
+        StringBuilder result = new StringBuilder();
+
+        result.append(this.getAllUsers());
+        result.append(this.createUser(createdUser).getBody());
+        result.append(this.updateUser(3L, updatedUser).getBody());
+        result.append(this.deleteUserById(3L).getBody());
+
+        System.out.println("Result code = '" + result + "'");
+        return ResponseEntity.ok(result.toString());
+    }
 
 
     // **********************************************************************
-//    @GetMapping(value = "/set-cookie")
-    private ResponseEntity<?> setCookie(HttpServletResponse response) throws IOException {
-        Cookie cookie = new Cookie("JSESSIONID", authToken.getJwtToken());
+    private void setSessionId(HttpHeaders headers) {
+        String jSessionIdReceived = headers.get("Set-Cookie")
+                .stream()
+                .filter(cookie -> cookie.startsWith("JSESSIONID"))
+                .findFirst()
+                .orElse("null")
+                .replace("JSESSIONID=", "")
+                .split(";")
+                [0];
+            authToken.setJSessionId(jSessionIdReceived.trim());
 
-        cookie.setPath("/");
-        cookie.setMaxAge(86400);
-        response.addCookie(cookie);
-        response.setContentType("text/plain");
-        return ResponseEntity.ok().body(HttpStatus.OK);
+        System.out.println("\n\t\t*** new value 'JSESSIONID'  = " + authToken.getJSessionId());
+
+//            if (!this.authToken.equals(jSessionIdReceived)) {
+//            System.out.println("\n\t\t*** old value 'JSESSIONID' = " + authToken.getJSessionId());
+//            authToken.setJSessionId(jSessionIdReceived);
+//            System.out.println("\t\t*** new value 'JSESSIONID'  = " + authToken.getJSessionId());
+//        } else {
+//            System.out.println("\n\t\t*** current value 'JSESSIONID' = " + authToken.getJSessionId());
+//        }
     }
 
-//    @GetMapping(value = "/get-cookie")
-    public ResponseEntity<?> readCookie(@CookieValue(value = "data") String data) {
-        return ResponseEntity.ok().body(data);
-    }
-
+//    private void refreshSessionId(HttpHeaders headers) {
+//        String jSessionIdReceived = headers.get("Set-Cookie")
+//                .stream()
+//                .filter(cookie -> cookie.startsWith("JSESSIONID"))
+//                .findFirst()
+//                .orElse("null")
+//                .replace("JSESSIONID=", "")
+//                .split(";")
+//                [0];
+//        if (!this.authToken.equals(jSessionIdReceived)) {
+//            System.out.println("\n\t\t*** old value 'JSESSIONID' = " + authToken.getJSessionId());
+//            authToken.setJSessionId(jSessionIdReceived);
+//            System.out.println("\t\t*** new value 'JSESSIONID'  = " + authToken.getJSessionId());
+//        } else {
+//            System.out.println("\n\t\t*** current value 'JSESSIONID' = " + authToken.getJSessionId());
+//        }
+//    }
 }
 
 
